@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NBIN Content">
+
+    <title>☕ NBIN</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="out/shared/css/style.css">
+
+    <!-- scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.1.0/marked.min.js"
+        integrity="sha512-DZIC9m2IbFlio5GE2oKD6/veW6NXML5Cbo9FHnba7Q9R4OCPelWw9R5QpupcPPLSv0euhuRr+5JV5pWl3X3nSg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        window.marked = marked;
+    </script>
+
+    <script src="out/shared/lib/bundle.js" type="module" defer></script>
+</head>
+
+<body>
+    <main>
+        <nav>
+            <div>
+                <h3><a href="/" class="nbin.nav.title">☕ New Bin</a></h3>
+            </div>
+
+            <div>
+                <a href="?sort=popular#feed/%" class="nbin.nav.title">Popular Subs</a>
+            </div>
+        </nav>
+
+        <!-- search -->
+        <div>
+            <form action="search" id="search" style="display: grid; place-items: center; margin: 0.4rem;">
+                <input type="text" placeholder="Search..." name="input" autocomplete="search">
+                <button style="display: none;">Submit</button>
+            </form>
+
+            <div id="search-output"></div>
+
+            <script type="module" defer>
+                // handle search
+                import SubredditHeader from "./out/shared/lib/ui/SubredditHeader.js";
+                import endpoints from "./out/shared/lib/api/endpoints.js";
+                import Post from "./out/shared/lib/ui/Post.js";
+
+                document.querySelector('form[action="search"] input[name="input"]').addEventListener("input", (e) => {
+                    document.title = `🔍 ${e.target.value} - ☕ NBIN`
+                })
+
+                document.querySelector('form[action="search"]').addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    document.getElementById("search-output").innerHTML = "";
+
+                    new SubredditHeader(
+                        {
+                            title: `Search Results: "${e.target.input.value}"`
+                        },
+                        document.getElementById("search-output")
+                    );
+
+                    // search
+                    const data = await (
+                        await fetch(endpoints.subreddit.search(e.target.input.value))
+                    ).json();
+
+                    // handle data
+                    for (let sub of data.data.children) {
+                        new Post(
+                            {
+                                title: sub.data.display_name_prefixed,
+                                blurb: sub.data.title,
+                                link: `?sub=${sub.data.display_name_prefixed}#subreddit/%`,
+                            },
+                            document.getElementById("search-output")
+                        );
+                    }
+                })
+            </script>
+        </div>
+
+        <!-- home -->
+        <div id="page/">
+            <div style="text-align: center;">
+                <h1>New Bin</h1>
+                <h3>Privacy respecting frontend for Reddit</h3>
+            </div>
+
+            <div id="nbin.core.subs" style="margin-top: 0.4rem;"></div>
+            <div id="nbin.core.settings" style="margin-top: 0.4rem;">
+                <hr style="margin: 0.4rem 0;">
+                <h1>Settings</h1>
+
+                <span>Background URL:</span>
+                <input type="url" placeholder="https://example.com/image/example.png" id="settings_backgroundurl">
+            </div>
+
+            <script type="module" defer>
+                // handle subscribed subs
+                import Post from "./out/shared/lib/ui/Post.js";
+
+                setTimeout(() => {
+                    const subscribed = JSON.parse(window.localStorage.getItem("subscribed_subs"));
+
+                    // handle data
+                    for (let sub of subscribed) {
+                        new Post(
+                            {
+                                title: sub,
+                                blurb: "Subscribed",
+                                link: `?sub=${sub}#subreddit/%`,
+                            },
+                            document.getElementById("nbin.core.subs")
+                        );
+                    }
+                }, 500);
+
+                // handle settings
+                setTimeout(() => {
+                    const settings = JSON.parse(window.localStorage.getItem("settings"));
+
+                    // background url
+                    document.getElementById("settings_backgroundurl").addEventListener("input", () => {
+                        settings.backgroundURL = document.getElementById("settings_backgroundurl").value;
+                        window.localStorage.setItem("settings", JSON.stringify(settings));
+                    });
+
+                    document.getElementById("settings_backgroundurl").value = settings.backgroundURL || "";
+                }, 500);
+            </script>
+        </div>
+
+        <!-- feed -->
+        <div id="page/feed/" style="display: none;">
+            <div id="nbin.core.feed"></div>
+        </div>
+
+        <!-- subreddit -->
+        <div id="page/subreddit/" style="display: none;">
+            <div id="nbin.core.subreddit"></div>
+        </div>
+
+        <!-- post -->
+        <div id="page/post/" style="display: none;">
+            <div id="nbin.core.post"></div>
+        </div>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "nbin",
+  "version": "1.0.0",
+  "description": "A privacy respecting frontend and API proxy for Reddit",
+  "main": "backend/index.js",
+  "scripts": {
+    "serve": "node backend/index.js",
+    "watch": "npx tsc -w",
+    "watch:css": "npx sass --watch public/shared/css:public/out/shared/css",
+    "build": "npx tsc && npx sass public/shared/css:public/out/shared/css"
+  },
+  "author": {
+    "name": "0aoq",
+    "url": "https://www.oxvs.net"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "http-to-fetch": "^1.1.0",
+    "mime-types": "^2.1.35"
+  },
+  "devDependencies": {
+    "sass": "^1.55.0",
+    "typescript": "^4.8.4"
+  }
+}

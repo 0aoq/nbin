@@ -1,0 +1,262 @@
+/* root */
+
+:root {
+    /* theme generation */
+    --lightness-mod: -5%; /* changes the brightness of everything */
+    --base-hue: 208; /* the base hue of the background */
+    --base-saturation: 0%; /* the base saturation of the background */
+
+    --text-hue: 0;
+    --text-saturation: 0%;
+    --text-lightness: 100%;
+
+    /* theme */
+    --primary: hsl(34, 14%, calc(65% + var(--lightness-mod)));
+    --primary-low: hsl(34, 14%, calc(55% + var(--lightness-mod)));
+
+    --bg-surface-highest: hsl(
+        var(--base-hue),
+        var(--base-saturation),
+        calc(26% + var(--lightness-mod))
+    );
+    --bg-surface-higher: hsl(
+        var(--base-hue),
+        var(--base-saturation),
+        calc(24% + var(--lightness-mod))
+    );
+    --bg-surface-high: hsl(
+        var(--base-hue),
+        var(--base-saturation),
+        calc(22% + var(--lightness-mod))
+    );
+    --bg-surface: hsl(
+        var(--base-hue),
+        var(--base-saturation),
+        calc(20% + var(--lightness-mod))
+    );
+    --bg-surface-low: hsl(
+        var(--base-hue),
+        var(--base-saturation),
+        calc(18% + var(--lightness-mod))
+    );
+    --bg-surface-lower: hsl(
+        var(--base-hue),
+        var(--base-saturation),
+        calc(16% + var(--lightness-mod))
+    );
+    --bg-surface-lowest: hsl(
+        var(--base-hue),
+        var(--base-saturation),
+        calc(14% + var(--lightness-mod))
+    );
+
+    --text-primary: hsl(
+        var(--text-hue),
+        var(--text-saturation),
+        var(--text-lightness)
+    );
+    --text-primary-darker: hsl(
+        var(--text-hue),
+        var(--text-saturation),
+        calc(calc(var(--text-lightness) - 12%) + var(--lightness-mod))
+    );
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    word-wrap: break-word;
+    flex-wrap: wrap;
+    white-space: initial;
+    overflow-wrap: break-word;
+}
+
+body {
+    background: var(--bg-surface);
+    color: white;
+    font-family: monospace;
+    overflow: hidden;
+}
+
+main {
+    background: var(--bg-surface);
+    max-width: 80ch;
+    padding: 3em 1em;
+    line-height: 1.5;
+    margin: auto;
+
+    /* make main scrollable */
+    position: fixed;
+    overflow-y: scroll;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+/* typography */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    /* make headings primary */
+    color: var(--primary);
+}
+
+p,
+span {
+    /* make normal text text-primary */
+    color: var(--text-primary);
+}
+
+a {
+    text-decoration: none;
+    /* font-style: italic; */
+    color: var(--primary);
+
+    &:hover {
+        text-decoration: underline;
+        color: var(--bg-surface);
+        background: var(--primary);
+    }
+}
+
+/* button */
+
+.btn {
+    background: var(--primary);
+    transition: all 0.1s;
+    color: var(--bg-surface);
+    border-radius: 1rem;
+    box-shadow: 0 0 8px rgba($color: #000, $alpha: 0);
+    padding: 0.4rem 0.8rem;
+    width: max-content;
+    display: flex;
+    justify-content: center;
+    place-items: center;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0.4rem auto;
+    outline: none;
+    border: none;
+
+    &:hover {
+        background: var(--primary-low);
+        box-shadow: 0 0 8px rgba($color: #000, $alpha: 0.25);
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+
+/* nav */
+
+nav {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 0.5fr 1fr; /* |   |       | */
+    align-items: center;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid var(--primary);
+
+    & a {
+        font-size: 16.848px; /* h3 */
+        padding: 0.2rem;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    & :nth-child(2) {
+        /* align items in second section to the right */
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+}
+
+/* feed */
+
+#nbin\.core\.feed {
+    margin-top: 0.8rem;
+}
+
+/* post */
+
+.nbin\.core\.post {
+    padding: 0.4rem;
+    border: solid 1px var(--bg-surface-higher);
+
+    transition: all 0.15s;
+
+    &:hover {
+        border-color: var(--bg-surface-highest);
+        cursor: pointer;
+        box-shadow: 0 0 8px rgba($color: #000, $alpha: 0.25);
+    }
+
+    & .post\.title {
+        color: var(--primary);
+    }
+
+    /* select the specific title we want */
+    &:hover > :first-child .post\.title {
+        /* steal properties from a:hover */
+        text-decoration: underline;
+        color: var(--bg-surface);
+        background: var(--primary);
+    }
+
+    /* videos/images */
+    & .media {
+        display: grid;
+        place-items: center;
+    }
+
+    & video,
+    & img {
+        max-width: 100%;
+        max-height: 50vh;
+        margin: auto;
+    }
+
+    /* nested posts */
+    & div .nbin\.core\.post {
+        border-left: solid 2px var(--primary);
+    }
+}
+
+/* subreddit header */
+
+.nbin\.core\.subreddit\.header {
+    padding: 0.8rem;
+    margin: 0.4rem 0;
+    background: var(--primary);
+    border-radius: 0.2rem;
+    box-shadow: 0 0 8px rgba($color: #fff, $alpha: 0.25);
+
+    & * {
+        color: var(--bg-surface) !important;
+    }
+}
+
+/* input */
+
+input {
+    width: 15rem;
+    background: var(--bg-surface-low);
+    border-radius: 0.2rem;
+    border: solid 1px var(--bg-surface-lower);
+    color: var(--text-primary);
+    padding: 0.4rem;
+
+    &::placeholder {
+        color: var(--bg-surface-highest);
+    }
+
+    &:focus {
+        outline: none;
+    }
+}
